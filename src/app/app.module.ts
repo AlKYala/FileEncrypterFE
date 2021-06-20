@@ -8,18 +8,27 @@ import { NavbarComponent } from './navbar/navbar.component';
 import { LandingComponent } from './landing/landing.component';
 import {RouterModule} from "@angular/router";
 import {AppRoutingModule} from "./app.routing-module";
+import { UploadComponentComponent } from './upload-component/upload-component.component';
+import {FormsModule, ReactiveFormsModule} from "@angular/forms";
+import {BrowserAnimationsModule, NoopAnimationsModule} from "@angular/platform-browser/animations";
+import {FileUploadModule} from "@iplab/ngx-file-upload";
 @NgModule({
   declarations: [
     AppComponent,
     EncryptionComponent,
     NavbarComponent,
-    LandingComponent
+    LandingComponent,
+    UploadComponentComponent
   ],
   imports: [
     BrowserModule,
     MDBBootstrapModule.forRoot(),
     RouterModule,
-    AppRoutingModule
+    AppRoutingModule,
+    ReactiveFormsModule,
+    FormsModule,
+    FileUploadModule,
+    BrowserAnimationsModule
   ],
   providers: [],
   bootstrap: [AppComponent]
