@@ -7,6 +7,7 @@ import {MDBBootstrapModule} from "angular-bootstrap-md";
 import { NavbarComponent } from './navbar/navbar.component';
 import { LandingComponent } from './landing/landing.component';
 import {RouterModule} from "@angular/router";
+import {AppRoutingModule} from "./app.routing-module";
 @NgModule({
   declarations: [
     AppComponent,
@@ -15,9 +16,10 @@ import {RouterModule} from "@angular/router";
     LandingComponent
   ],
   imports: [
-    RouterModule,
     BrowserModule,
-    MDBBootstrapModule.forRoot()
+    MDBBootstrapModule.forRoot(),
+    RouterModule,
+    AppRoutingModule
   ],
   providers: [],
   bootstrap: [AppComponent]
