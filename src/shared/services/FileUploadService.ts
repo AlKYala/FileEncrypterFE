@@ -18,9 +18,7 @@ export class FileUploadService {
     this.files = [];
   }
 
-  public filesToBase64(): string[][] {
-    const filesInBase64: string[][]
-  }
+
 
   private getFileNameAndExtension(fileName:string): string[] {
     const fullFileName: string[] = fileName.split('.');
@@ -28,13 +26,5 @@ export class FileUploadService {
     ret.push(fullFileName[fullFileName.length-2]);
     ret.push(fullFileName[fullFileName.length-1]);
     return ret;
-  }
-
-  private processFile(file: File): string[] {
-    const data: string[] = [];
-    const fileNameSplit: string[] = this.getFileNameAndExtension(file.name);
-    //TODO index 0 has base64 representation
-    data.push(fileNameSplit[0]);
-    data.push(fileNameSplit[1]);
   }
 }
