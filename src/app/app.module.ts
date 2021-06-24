@@ -12,6 +12,7 @@ import { UploadComponentComponent } from './upload-component/upload-component.co
 import {FormsModule, ReactiveFormsModule} from "@angular/forms";
 import {BrowserAnimationsModule, NoopAnimationsModule} from "@angular/platform-browser/animations";
 import {FileUploadModule} from "@iplab/ngx-file-upload";
+import {HttpClient, HttpClientModule} from "@angular/common/http";
 @NgModule({
   declarations: [
     AppComponent,
@@ -28,7 +29,8 @@ import {FileUploadModule} from "@iplab/ngx-file-upload";
     ReactiveFormsModule,
     FormsModule,
     FileUploadModule,
-    BrowserAnimationsModule
+    BrowserAnimationsModule,
+    HttpClientModule
   ],
   providers: [],
   bootstrap: [AppComponent]
