@@ -1,6 +1,5 @@
 import {Injectable} from "@angular/core";
 import {Observable} from "rxjs";
-import FileBase64 from 'react-file-base64';
 
 @Injectable({
   providedIn: 'root'
@@ -33,6 +32,4 @@ export class FileService {
     }
     return -1;
   }
-
-
 }

@@ -8,4 +8,8 @@ export class Base64File {
     this.fileName = fileName;
     this.fileExtension = fileExtension;
   }
+
+  public getFilenameWithExtension(): string {
+    return `${this.fileName}.${this.fileExtension}`;
+  }
 }
