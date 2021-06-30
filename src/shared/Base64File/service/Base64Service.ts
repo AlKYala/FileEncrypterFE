@@ -1,24 +1,21 @@
 import {Injectable} from "@angular/core";
 import {Base64File} from "../model/Base64File";
+import {Buffer} from "buffer";
 
 @Injectable({
   providedIn: 'root'
 })
 export class Base64Service {
-
-
-
   // credit goes to: https://stackoverflow.com/questions/58502673/angular-8-parsing-base64-to-file
-  public base64FileToFile(b64File: Base64File): void {
+  /*public base64FileToFile(b64File: Base64File): void {
     /*const fullFileName = b64File.getFilenameWithExtension();
     const imageBlob = this.dataURItoBlob(b64File.base64);
     return new File([imageBlob], fullFileName);
 
     new idea: just serialize
-    */
+    *\/
     console.log(JSON.stringify(b64File));
-
-  }
+  }*/
 
 
   /*public dataURItoBlob(dataURI: string): Blob {
@@ -32,5 +29,4 @@ export class Base64Service {
     //gegen ende: 	application/zip
     return blob;
   }*/
-
 }

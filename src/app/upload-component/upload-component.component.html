@@ -1,0 +1,8 @@
+<form #demoForm="ngForm">
+  <file-upload [(ngModel)]="uploadedFiles" name="files"></file-upload>
+</form>
+<button (click)="this.fireUpload()" class="btn btn-primary">
+  Debug
+</button>
+<input class="btn btn-primary" type="file" (change)="onFileSelected($event)" />
+<br /><br />
