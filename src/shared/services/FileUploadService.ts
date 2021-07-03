@@ -7,6 +7,7 @@ import {environment} from "../../environments/environment";
 import {Base64Service} from "../Base64File/service/Base64Service";
 import {map} from "rxjs/operators";
 import {DomSanitizer} from "@angular/platform-browser";
+import {ExtendedBase64File} from "../Base64File/model/ExtendedBase64File";
 
 @Injectable({
   providedIn: 'root'
@@ -25,6 +26,11 @@ export class FileUploadService {
   public sendBase64Request(base64File: Base64File) : Observable<string[][]> {
     return this.httpClient.post(`${environment.api}/encrypt/singlebase64`, base64File) as Observable<string[][]>;
   }
+
+  public sendDecryptionRequest(extendedBase64File: ExtendedBase64File): Observable<Base64File> {
+    return this.httpClient.post(`${environment.api}/decrypt/bundle`, extendedBase64File) as Observable<Base64File>;
+  }
+
   //Answer by deitsch https://stackoverflow.com/questions/52182851/how-to-download-file-with-blob-function-using-angular-5
   /*public downloadEncryptedData(encryptedData: string[][]): void {
     //first
