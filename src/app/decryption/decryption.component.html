@@ -1,4 +1,5 @@
 <form #demoForm="ngForm">
+  <h1>Please only upload the map (.map) and the (.encrypted) file. Anything else will be blocked</h1>
   <file-upload [(ngModel)]="uploadedFiles" name="files"></file-upload>
 </form>
 <button (click)="this.fireUpload()" class="btn btn-primary">

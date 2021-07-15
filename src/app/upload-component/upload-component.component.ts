@@ -31,24 +31,10 @@ export class UploadComponentComponent {
               private base64Service: Base64Service) {
   }
 
-  onFileSelected(event: any) {
-    this.convertFile(event.target.files[0]).subscribe(base64 => {
-      this.base64Output = base64;
-      const fileInfo = this.getFileNameAndExtensionFromFile(this.uploadedFiles[0]);
-      const info: Base64File = new Base64File(base64, fileInfo[0], fileInfo[1]);
-      this.loaded = true;
-      console.log(info);
-      this.fileUploadService.sendBase64Request(info).pipe().subscribe( (data: string[][]) => {
-        this.downloadEncryptedData(data);
-        }
-      );
-      console.log(info);
-    });
-  }
-
   private downloadEncryptedData(data: string[][]) {
     this.triggerDownloadBase64String(data[0]);
     this.triggerDownloadBase64String(data[1]);
+    this.triggerDownloadBase64String(data[2]);
   }
 
   convertFile(file : File) : Observable<string> {

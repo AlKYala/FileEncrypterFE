@@ -13,13 +13,15 @@ import {FormsModule, ReactiveFormsModule} from "@angular/forms";
 import {BrowserAnimationsModule, NoopAnimationsModule} from "@angular/platform-browser/animations";
 import {FileUploadModule} from "@iplab/ngx-file-upload";
 import {HttpClient, HttpClientModule} from "@angular/common/http";
+import { DecryptionComponent } from './decryption/decryption.component';
 @NgModule({
   declarations: [
     AppComponent,
     EncryptionComponent,
     NavbarComponent,
     LandingComponent,
-    UploadComponentComponent
+    UploadComponentComponent,
+    DecryptionComponent
   ],
   imports: [
     BrowserModule,
