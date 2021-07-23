@@ -12,7 +12,6 @@ export class EncryptionService {
   }
 
   public encrypt(files: Array<File>): void {
-    //TODO add conditions for single/multiple files later
     this.encryptSingleFile(files[0]);
   }
 

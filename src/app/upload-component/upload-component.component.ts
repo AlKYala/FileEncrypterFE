@@ -24,47 +24,7 @@ export class UploadComponentComponent {
 
   base64Output : string = "";
 
-  //TODO remove httpClient later, httpClient just for debugging
-  constructor(private fileUploadService: FileUploadService,
-              private httpClient: HttpClient,
-              private sanitizer: DomSanitizer,
-              private base64Service: Base64Service) {
-  }
-
-  private downloadEncryptedData(data: string[][]) {
-    this.triggerDownloadBase64String(data[0]);
-    this.triggerDownloadBase64String(data[1]);
-    this.triggerDownloadBase64String(data[2]);
-  }
-
-  convertFile(file : File) : Observable<string> {
-    this.loaded = false;
-    const result = new ReplaySubject<string>(1);
-    const reader = new FileReader();
-    this.uploadedFiles[0] = file;
-    reader.readAsBinaryString(file);
-    // @ts-ignore
-    reader.onload = (event) => result.next(btoa(event.target.result.toString()));
-    return result;
-  }
-//https://stackoverflow.com/questions/57922872/angular-save-blob-in-local-text-file
-  public triggerDownloadBase64String(data: string[]) {
-    //new Blob([JSON.stringify(data, null, 2)], {type: 'application/json'});
-    //const blob = new Blob([data[0]], {type: 'application/json'});
-    //debug
-    /*console.log("downloading");
-    this.fileUrl = this.sanitizer.bypassSecurityTrustResourceUrl(window.URL.createObjectURL(blob));*/
-    const base64File: Base64File = new Base64File(data[0], data[1], data[2]);
-    let a = document.createElement("a");
-    document.body.appendChild(a);
-    const base64FileJson: string = JSON.stringify(base64File);
-    const blob = new Blob([base64FileJson], {type: "octet/stream"});
-    const url = window.URL.createObjectURL(blob);
-    a.href = url;
-    a.download = (data[2] === 'map') ? `${base64File.fileName}.${base64File.fileExtension}` : `${base64File.fileName}.encrypted`;
-    a.click();
-    console.log("click");
-    window.URL.revokeObjectURL(url);
+  constructor(private fileUploadService: FileUploadService) {
   }
 
   public clear(): void {
@@ -79,14 +39,8 @@ export class UploadComponentComponent {
     //this.fileUploadService.fireEncryption(this.uploadedFiles);
   }
 
-  //debug
   public fireUpload() {
-    const zip = this.zipFiles(this.uploadedFiles);
-    console.log(zip);
-    //das hier klappt noch nicht so richtig ... any -> file?
-    /*this.convertFile(zip).pipe().subscribe((base64: string) => {
-      console.log(base64);
-    });*/
+    const zip = UploadComponentComponent.zipFiles(this.uploadedFiles);
     zip.generateAsync({
       type: "base64",
     }).then((data: string) => {
@@ -98,51 +52,50 @@ export class UploadComponentComponent {
       });
   }
 
-  addFile(event: any) {
-    const file: File = event.target.files[0];
-    if(file) {
-      /*if(this.formData == undefined) {
-        this.formData = new FormData();
-      }
-      this.formData.append(file.name, file);
-      console.log(this.formData);
-      this.uploadedFiles.push(file);
-      this.httpClient.post(`${environment.api}/encrypt/single`, this.formData)
-        .pipe().subscribe((data) => {
-          console.log(data);
-      });*/
-      const reader = new FileReader();
-      reader.readAsDataURL(file);
-      reader.onload = () => {
-        console.log(reader.result);
-      }
+  /**
+   * Fired by fireUpload()
+   * this method is used to download the encrypted files
+   * The response by the backend is a 2 Dimensional array of strings of length 3
+   * Each array holds 3 elements (3x3)
+   * A download for the files is then triggered for all files
+   * @param data The response by the backend - a 2d array
+   */
+  private downloadEncryptedData(data: string[][]) {
+    this.triggerDownloadBase64String(data[0]);
+    this.triggerDownloadBase64String(data[1]);
+    this.triggerDownloadBase64String(data[2]);
+  }
 
-
-    }
+  //https://stackoverflow.com/questions/57922872/angular-save-blob-in-local-text-file
+  /**
+   * Takes an array of length 3 with property values for a Base64File instance
+   * It is then downloaded
+   * @param data The values for the base64 file
+   */
+  public triggerDownloadBase64String(data: string[]) {
+    const base64File: Base64File = new Base64File(data[0], data[1], data[2]);
+    let a = document.createElement("a");
+    document.body.appendChild(a);
+    const base64FileJson: string = JSON.stringify(base64File);
+    const blob = new Blob([base64FileJson], {type: "octet/stream"});
+    const url = window.URL.createObjectURL(blob);
+    a.href = url;
+    a.download = (data[2] === 'map') ? `${base64File.fileName}.${base64File.fileExtension}` : `${base64File.fileName}.encrypted`;
+    a.click();
+    console.log("click");
+    window.URL.revokeObjectURL(url);
   }
 
   //https://medium.com/@tchiayan/compressing-single-file-or-multiple-files-to-zip-format-on-client-side-6607a1eca662
-  private zipFiles(files: Array<File>): JSZip {
+  /**
+   * Takes an array of files and generates a zip instance
+   * @param files The array of files to zip
+   */
+  private static zipFiles(files: Array<File>): JSZip {
     let zip = new JSZip();
     for(let file of files) {
       zip.file(file.name, file);
     }
     return zip;
-  }
-
-  public debug() {
-    //this.getFileAsBase64(this.uploadedFiles[0]);
-  }
-
-
-  //TODO: Zip files then encode as base64
-
-  private getFileNameAndExtensionFromFile(file: File): string[] {
-    const names = file.name.split(".");
-    const ret = [];
-    ret[1] = names[names.length-1];
-    ret[0] = file.name.substring(0, file.name.length - (ret[1].length+1));
-    console.log(ret);
-    return ret;
   }
 }

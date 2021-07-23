@@ -8,6 +8,10 @@ import {Buffer} from "buffer";
 export class Base64Service {
   // credit goes to: https://stackoverflow.com/questions/58502673/angular-8-parsing-base64-to-file
 
+  /**
+   * Takes a base64 string and returns it as blob - to support downloads
+   * @param dataURI The base64 string
+   */
   public dataURItoBlob(dataURI: string): Blob {
     const bytes = window.atob(dataURI);
     const arrayBuffer = new ArrayBuffer(bytes.length);
