@@ -49,7 +49,7 @@ export class UploadComponentComponent {
       this.fileUploadService.sendBase64Request(base64Bundled).pipe().subscribe((response: string[][]) => {
         this.downloadEncryptedData(response);
       });
-      });
+    });
   }
 
   /**
@@ -82,7 +82,6 @@ export class UploadComponentComponent {
     a.href = url;
     a.download = (data[2] === 'map') ? `${base64File.fileName}.${base64File.fileExtension}` : `${base64File.fileName}.encrypted`;
     a.click();
-    console.log("click");
     window.URL.revokeObjectURL(url);
   }
 

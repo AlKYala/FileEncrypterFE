@@ -16,9 +16,6 @@ import {switchMap} from "rxjs/operators";
 export class DecryptionComponent implements OnInit {
 
   public uploadedFiles: Array<File> = [];
-  private formData: FormData = new FormData();
-  private loaded: boolean = false;
-  public fileUrl: any;
 
   constructor(private fileUploadService: FileUploadService,
               private httpClient: HttpClient,

@@ -13,9 +13,4 @@ export class EncryptionComponent implements OnInit {
 
   ngOnInit(): void {
   }
-
-
-  public fetchData() {
-
-  }
 }

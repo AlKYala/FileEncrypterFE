@@ -9,6 +9,9 @@ export class Base64File {
     this.fileExtension = fileExtension;
   }
 
+  /**
+   * Basically a toString() method
+   */
   public getFilenameWithExtension(): string {
     return `${this.fileName}.${this.fileExtension}`;
   }
