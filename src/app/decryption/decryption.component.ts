@@ -39,7 +39,6 @@ export class DecryptionComponent implements OnInit {
       console.log("debug error message");
     }
     let extendedBase64: ExtendedBase64File;
-    //AVOIDING NESTED SUBSCRIPTION
     this.stringsAsObservable(this.filesToStringArr(this.uploadedFiles)).pipe(
       switchMap((data: string[]) => {
         extendedBase64 = this.extendedBase64FileFromStringArray(data);
@@ -51,6 +50,12 @@ export class DecryptionComponent implements OnInit {
   }
 
   //https://stackoverflow.com/questions/50182259/avoiding-nested-promises-in-angular
+  /**
+   * Takes an array of files, converts them into strings
+   * Used to transform files into strings for base64 conversion
+   * @param files The array of files
+   * @private
+   */
   private async filesToStringArr(files: Array<File>): Promise<string[]> {
     let results: string[];
     results = [];
@@ -70,6 +75,11 @@ export class DecryptionComponent implements OnInit {
     return results;
   }
 
+  /**
+   * Converts a promise for a string array
+   * @param stringPromise
+   * @private
+   */
   private stringsAsObservable(stringPromise: Promise<string[]>): Observable<string[]> {
     return from(stringPromise) as Observable<string[]>;
   }

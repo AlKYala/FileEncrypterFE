@@ -4,11 +4,12 @@ import {FormControl, FormGroup} from "@angular/forms";
 import {FileUploadService} from "../../shared/services/FileUploadService";
 import {HttpClient} from "@angular/common/http";
 import {environment} from "../../environments/environment";
-import {Observable, ReplaySubject} from "rxjs";
+import {from, Observable, ReplaySubject} from "rxjs";
 import {Base64File} from "../../shared/Base64File/model/Base64File";
 import {DomSanitizer} from "@angular/platform-browser";
 import * as JSZip from "jszip";
 import {Base64Service} from "../../shared/Base64File/service/Base64Service";
+import {switchMap} from "rxjs/operators";
 
 @Component({
   selector: 'app-upload-component',
@@ -39,17 +40,31 @@ export class UploadComponentComponent {
     //this.fileUploadService.fireEncryption(this.uploadedFiles);
   }
 
+  /**
+   * Zips files saved in UploadComponentComponent::uploadedFiles, converts that zip into base64
+   * and sends it to backend
+   */
   public fireUpload() {
     const zip = UploadComponentComponent.zipFiles(this.uploadedFiles);
-    zip.generateAsync({
-      type: "base64",
-    }).then((data: string) => {
-      //this is the base64
-      const base64Bundled: Base64File = new Base64File(data, "bundled", "zip");
-      this.fileUploadService.sendBase64Request(base64Bundled).pipe().subscribe((response: string[][]) => {
+    this.zipPromiseToObservable(zip).pipe(
+      switchMap((zipAsBase64: string) => {
+        const base64Bundled: Base64File = new Base64File(zipAsBase64, "bundled", "zip");
+        return this.fileUploadService.sendBase64Request(base64Bundled);
+      })).subscribe((response: string[][]) => {
         this.downloadEncryptedData(response);
-      });
     });
+  }
+
+  /**
+   * Method used in UploadComponentComponent::fireUpload to encode a zip instance to base64
+   * @param zip the zip to encode to base64
+   */
+  private zipPromiseToObservable(zip: JSZip): Observable<string> {
+    return from(zip.generateAsync(
+      {
+        type: "base64",
+      }
+    ));
   }
 
   /**
