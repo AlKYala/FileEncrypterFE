@@ -5,8 +5,9 @@ import {DomSanitizer} from "@angular/platform-browser";
 import {Base64Service} from "../../shared/Base64File/service/Base64Service";
 import {Base64File} from "../../shared/Base64File/model/Base64File";
 import {ExtendedBase64File} from "../../shared/Base64File/model/ExtendedBase64File";
-import {from, Observable, pipe} from "rxjs";
+import {from, Observable} from "rxjs";
 import {switchMap} from "rxjs/operators";
+import {CustomFile} from "../../shared/Base64File/CustomFile/model/CustomFile";
 
 @Component({
   selector: 'app-decryption',
@@ -16,11 +17,16 @@ import {switchMap} from "rxjs/operators";
 export class DecryptionComponent implements OnInit {
 
   public uploadedFiles: Array<File> = [];
+  public customFiles: Array<CustomFile> = [];
 
   constructor(private fileUploadService: FileUploadService,
               private httpClient: HttpClient,
               private sanitizer: DomSanitizer,
               private base64Service: Base64Service) {
+    const placeHolderCustom = {file: this.getEmptyFile(), fileName: "", fileExtension: ""};
+    for(let i = 0; i < 3; i++) {
+      this.customFiles[i] = placeHolderCustom;
+    }
   }
 
   ngOnInit(): void {
@@ -144,5 +150,18 @@ export class DecryptionComponent implements OnInit {
     a.click();
     console.log("click");
     window.URL.revokeObjectURL(url);
+  }
+
+  /**
+   * Create a placeholder file instance for CustomFile instances
+   * @private
+   */
+  private getEmptyFile(): File {
+    return new File([], "");
+  }
+
+  public setCustomFile(index: number, file: File) {
+    const names: string[] = this.fileUploadService.getFileNameAndExtension(file.name);
+    this.customFiles[index] = {file: file, fileName: names[0], fileExtension: names[1]};
   }
 }

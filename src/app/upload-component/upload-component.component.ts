@@ -26,18 +26,11 @@ export class UploadComponentComponent {
   base64Output : string = "";
 
   constructor(private fileUploadService: FileUploadService) {
+
   }
 
   public clear(): void {
     this.uploadedFiles = [];
-  }
-
-  public seeFiles() {
-    console.log(this.uploadedFiles);
-  }
-
-  public upload(): void {
-    //this.fileUploadService.fireEncryption(this.uploadedFiles);
   }
 
   /**
@@ -88,16 +81,35 @@ export class UploadComponentComponent {
    * @param data The values for the base64 file
    */
   public triggerDownloadBase64String(data: string[]) {
-    const base64File: Base64File = new Base64File(data[0], data[1], data[2]);
     let a = document.createElement("a");
     document.body.appendChild(a);
-    const base64FileJson: string = JSON.stringify(base64File);
-    const blob = new Blob([base64FileJson], {type: "octet/stream"});
+    const blob = this.createBase64FileBlobFromData(data);
     const url = window.URL.createObjectURL(blob);
     a.href = url;
-    a.download = (data[2] === 'map') ? `${base64File.fileName}.${base64File.fileExtension}` : `${base64File.fileName}.encrypted`;
+    const fileExtension = (data[2] == 'zip') ? "encrypted" : data[2];
+    a.download = `${data[1]}.${fileExtension}`;
     a.click();
     window.URL.revokeObjectURL(url);
+  }
+
+  private createBase64FileBlobFromData(data: string[]): Blob {
+    const base64File: Base64File = new Base64File(data[0], data[1], data[2]);
+    const base64FileJson: string = JSON.stringify(base64File);
+    const blob = new Blob([base64FileJson], {type: "octet/stream"});
+    return blob;
+  }
+
+  /**
+   * Idea: We want the parent file and map to be private for this we bundle them in a .zip file
+   * then trigger download in one file
+   * Add a readme file that tells the user not to lose the file
+   * @param privateData The data of the map and parent file as URI. These have to be transformed into files
+   * and then downloaded
+   *
+   * Note: In backend the 2d Array is already sorted so the map and parent are at index 1 and 2
+   */
+  private bundlePrivateData(privateData: string[][]) {
+
   }
 
   //https://medium.com/@tchiayan/compressing-single-file-or-multiple-files-to-zip-format-on-client-side-6607a1eca662
