@@ -25,9 +25,7 @@ export class UploadComponentComponent {
 
   base64Output : string = "";
 
-  constructor(private fileUploadService: FileUploadService) {
-
-  }
+  constructor(private fileUploadService: FileUploadService) {}
 
   public clear(): void {
     this.uploadedFiles = [];
@@ -103,22 +101,6 @@ export class UploadComponentComponent {
     const blob = new Blob([base64FileJson], {type: "octet/stream"});
     return blob;
   }
-
-  /**
-   * Takes the parent file and map file creates a zip from it - so the user only has to keep 2 files
-   * the encrypted data and the zip with map, parent and a created readme file
-   * @param keyfiles a 2d array that holds the data for the map file (index 0) and parent file (index 1)
-   *
-   * UNUSED
-   */
-  private zipKey(keyfiles: string[][]) {
-    /*const mapBlob: Blob = this.createBase64FileBlobFromData(keyfiles[0]);
-    const parentBlob: Blob = this.createBase64FileBlobFromData(keyfiles[1]);
-    const keyzip: JSZip = new JSZip();
-    //keyzip.file*/
-  }
-
-
 
   //https://medium.com/@tchiayan/compressing-single-file-or-multiple-files-to-zip-format-on-client-side-6607a1eca662
   /**

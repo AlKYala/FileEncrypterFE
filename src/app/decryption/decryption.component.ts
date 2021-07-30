@@ -94,7 +94,7 @@ export class DecryptionComponent implements OnInit {
    * @param values 3 strings in an array to make an array of 3 Base64Files from.
    */
   private stringsToBase64Files(values: string[]): Base64File[] {
-    return [this.readBase64File(values[0]), this.readBase64File(values[1]), this.readBase64File(values[2])];
+    return [this.readBase64File(values[0]), this.readBase64File(values[1])];
   }
 
   /**
