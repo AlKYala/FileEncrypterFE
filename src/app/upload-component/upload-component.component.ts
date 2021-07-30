@@ -42,6 +42,7 @@ export class UploadComponentComponent {
     this.zipPromiseToObservable(zip).pipe(
       switchMap((zipAsBase64: string) => {
         const base64Bundled: Base64File = new Base64File(zipAsBase64, "bundled", "zip");
+        console.log(base64Bundled);
         return this.fileUploadService.sendBase64Request(base64Bundled);
       })).subscribe((response: string[][]) => {
         this.downloadEncryptedData(response);
@@ -71,7 +72,6 @@ export class UploadComponentComponent {
   private downloadEncryptedData(data: string[][]) {
     this.triggerDownloadBase64String(data[0]);
     this.triggerDownloadBase64String(data[1]);
-    this.triggerDownloadBase64String(data[2]);
   }
 
   //https://stackoverflow.com/questions/57922872/angular-save-blob-in-local-text-file

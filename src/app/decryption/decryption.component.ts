@@ -125,8 +125,7 @@ export class DecryptionComponent implements OnInit {
     const extendedB64: ExtendedBase64File = new ExtendedBase64File();
     for(let i = 0; i < files.length; i++) {
       switch(files[i].fileExtension) {
-        case 'map': extendedB64.setKey(files[i]); break;
-        case 'parent': extendedB64.setParent(files[i]); break;
+        case 'frame': extendedB64.setFrame(files[i]); break;
         default: extendedB64.setContent(files[i]);
       }
     }
