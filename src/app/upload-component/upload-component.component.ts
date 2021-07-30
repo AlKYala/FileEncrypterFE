@@ -86,12 +86,17 @@ export class UploadComponentComponent {
     const blob = this.createBase64FileBlobFromData(data);
     const url = window.URL.createObjectURL(blob);
     a.href = url;
-    const fileExtension = (data[2] == 'zip') ? "encrypted" : data[2];
-    a.download = `${data[1]}.${fileExtension}`;
+    a.download = (data[2] == 'zip') ? `${data[1]}.encrypted` : `${data[1]}.${data[2]}`;
     a.click();
     window.URL.revokeObjectURL(url);
   }
 
+  /**
+   * Takes the base64 URI of a file, filename and fileextension from a string array, instantiates a Base64File
+   * instance from it then creates a Blob from its json represenation
+   * @param data
+   * @private
+   */
   private createBase64FileBlobFromData(data: string[]): Blob {
     const base64File: Base64File = new Base64File(data[0], data[1], data[2]);
     const base64FileJson: string = JSON.stringify(base64File);
@@ -100,17 +105,20 @@ export class UploadComponentComponent {
   }
 
   /**
-   * Idea: We want the parent file and map to be private for this we bundle them in a .zip file
-   * then trigger download in one file
-   * Add a readme file that tells the user not to lose the file
-   * @param privateData The data of the map and parent file as URI. These have to be transformed into files
-   * and then downloaded
+   * Takes the parent file and map file creates a zip from it - so the user only has to keep 2 files
+   * the encrypted data and the zip with map, parent and a created readme file
+   * @param keyfiles a 2d array that holds the data for the map file (index 0) and parent file (index 1)
    *
-   * Note: In backend the 2d Array is already sorted so the map and parent are at index 1 and 2
+   * UNUSED
    */
-  private bundlePrivateData(privateData: string[][]) {
-
+  private zipKey(keyfiles: string[][]) {
+    /*const mapBlob: Blob = this.createBase64FileBlobFromData(keyfiles[0]);
+    const parentBlob: Blob = this.createBase64FileBlobFromData(keyfiles[1]);
+    const keyzip: JSZip = new JSZip();
+    //keyzip.file*/
   }
+
+
 
   //https://medium.com/@tchiayan/compressing-single-file-or-multiple-files-to-zip-format-on-client-side-6607a1eca662
   /**
