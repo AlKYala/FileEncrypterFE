@@ -24,7 +24,7 @@ export class DecryptionComponent implements OnInit {
               private sanitizer: DomSanitizer,
               private base64Service: Base64Service) {
     const placeHolderCustom = {file: this.getEmptyFile(), fileName: "", fileExtension: ""};
-    for(let i = 0; i < 3; i++) {
+    for(let i = 0; i < 2; i++) {
       this.customFiles[i] = placeHolderCustom;
     }
   }
@@ -53,6 +53,11 @@ export class DecryptionComponent implements OnInit {
     )).subscribe((data:Base64File) => {
       this.triggerDownloadBase64String(data.base64);
     });
+  }
+
+  public static setFiles($eventTarget: EventTarget, index: number) {
+    //TODO im upload das hinkriegen dass wir eine File erzeugen
+    console.log($eventTarget);
   }
 
   //https://stackoverflow.com/questions/50182259/avoiding-nested-promises-in-angular
