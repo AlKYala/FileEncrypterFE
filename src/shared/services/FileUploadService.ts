@@ -55,7 +55,7 @@ export class FileUploadService {
    * in an array, where filename has index 0, file extension has index 1
    * @param fileName
    */
-  public getFileNameAndExtension(fileName:string): string[] {
+  private getFileNameAndExtension(fileName:string): string[] {
     const fullFileName: string[] = fileName.split('.');
     const ret: string[] = [];
     ret.push(fullFileName[fullFileName.length-2]);
