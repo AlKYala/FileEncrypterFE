@@ -5,8 +5,9 @@ import {DomSanitizer} from "@angular/platform-browser";
 import {Base64Service} from "../../shared/Base64File/service/Base64Service";
 import {Base64File} from "../../shared/Base64File/model/Base64File";
 import {ExtendedBase64File} from "../../shared/Base64File/model/ExtendedBase64File";
-import {from, Observable, pipe} from "rxjs";
+import {from, Observable} from "rxjs";
 import {switchMap} from "rxjs/operators";
+import {CustomFile} from "../../shared/Base64File/CustomFile/model/CustomFile";
 
 @Component({
   selector: 'app-decryption',
@@ -35,11 +36,10 @@ export class DecryptionComponent implements OnInit {
    * is no limit on how many files are encrypted at once
    */
   public fireUpload() {
-    if(this.uploadedFiles.length != 3) {
+    if(this.uploadedFiles.length != 2) {
       console.log("debug error message");
     }
     let extendedBase64: ExtendedBase64File;
-    //AVOIDING NESTED SUBSCRIPTION
     this.stringsAsObservable(this.filesToStringArr(this.uploadedFiles)).pipe(
       switchMap((data: string[]) => {
         extendedBase64 = this.extendedBase64FileFromStringArray(data);
@@ -50,7 +50,17 @@ export class DecryptionComponent implements OnInit {
     });
   }
 
+  onChange(event: any, index: number): void {
+    this.uploadedFiles[index] = event.target.files[0];
+  }
+
   //https://stackoverflow.com/questions/50182259/avoiding-nested-promises-in-angular
+  /**
+   * Takes an array of files, converts them into strings
+   * Used to transform files into strings for base64 conversion
+   * @param files The array of files
+   * @private
+   */
   private async filesToStringArr(files: Array<File>): Promise<string[]> {
     let results: string[];
     results = [];
@@ -70,6 +80,11 @@ export class DecryptionComponent implements OnInit {
     return results;
   }
 
+  /**
+   * Converts a promise for a string array
+   * @param stringPromise
+   * @private
+   */
   private stringsAsObservable(stringPromise: Promise<string[]>): Observable<string[]> {
     return from(stringPromise) as Observable<string[]>;
   }
@@ -78,7 +93,7 @@ export class DecryptionComponent implements OnInit {
    * @param values 3 strings in an array to make an array of 3 Base64Files from.
    */
   private stringsToBase64Files(values: string[]): Base64File[] {
-    return [this.readBase64File(values[0]), this.readBase64File(values[1]), this.readBase64File(values[2])];
+    return [this.readBase64File(values[0]), this.readBase64File(values[1])];
   }
 
   /**
@@ -109,8 +124,7 @@ export class DecryptionComponent implements OnInit {
     const extendedB64: ExtendedBase64File = new ExtendedBase64File();
     for(let i = 0; i < files.length; i++) {
       switch(files[i].fileExtension) {
-        case 'map': extendedB64.setKey(files[i]); break;
-        case 'parent': extendedB64.setParent(files[i]); break;
+        case 'frame': extendedB64.setFrame(files[i]); break;
         default: extendedB64.setContent(files[i]);
       }
     }
@@ -134,5 +148,13 @@ export class DecryptionComponent implements OnInit {
     a.click();
     console.log("click");
     window.URL.revokeObjectURL(url);
+  }
+
+  /**
+   * Create a placeholder file instance for CustomFile instances
+   * @private
+   */
+  private getEmptyFile(): File {
+    return new File([], "");
   }
 }
