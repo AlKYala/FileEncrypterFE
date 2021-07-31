@@ -4,11 +4,12 @@ import {FormControl, FormGroup} from "@angular/forms";
 import {FileUploadService} from "../../shared/services/FileUploadService";
 import {HttpClient} from "@angular/common/http";
 import {environment} from "../../environments/environment";
-import {Observable, ReplaySubject} from "rxjs";
+import {from, Observable, ReplaySubject} from "rxjs";
 import {Base64File} from "../../shared/Base64File/model/Base64File";
 import {DomSanitizer} from "@angular/platform-browser";
 import * as JSZip from "jszip";
 import {Base64Service} from "../../shared/Base64File/service/Base64Service";
+import {switchMap} from "rxjs/operators";
 
 @Component({
   selector: 'app-upload-component',
@@ -24,32 +25,38 @@ export class UploadComponentComponent {
 
   base64Output : string = "";
 
-  constructor(private fileUploadService: FileUploadService) {
-  }
+  constructor(private fileUploadService: FileUploadService) {}
 
   public clear(): void {
     this.uploadedFiles = [];
   }
 
-  public seeFiles() {
-    console.log(this.uploadedFiles);
-  }
-
-  public upload(): void {
-    //this.fileUploadService.fireEncryption(this.uploadedFiles);
-  }
-
+  /**
+   * Zips files saved in UploadComponentComponent::uploadedFiles, converts that zip into base64
+   * and sends it to backend
+   */
   public fireUpload() {
     const zip = UploadComponentComponent.zipFiles(this.uploadedFiles);
-    zip.generateAsync({
-      type: "base64",
-    }).then((data: string) => {
-      //this is the base64
-      const base64Bundled: Base64File = new Base64File(data, "bundled", "zip");
-      this.fileUploadService.sendBase64Request(base64Bundled).pipe().subscribe((response: string[][]) => {
-        this.downloadEncryptedData(response);
-      });
+    this.zipPromiseToObservable(zip).pipe(
+      switchMap((zipAsBase64: string) => {
+        const base64Bundled: Base64File = new Base64File(zipAsBase64, "bundled", "zip");
+        console.log(base64Bundled);
+        return this.fileUploadService.sendBase64Request(base64Bundled);
+      })).subscribe((response: string[][]) => {
+      this.downloadEncryptedData(response);
     });
+  }
+
+  /**
+   * Method used in UploadComponentComponent::fireUpload to encode a zip instance to base64
+   * @param zip the zip to encode to base64
+   */
+  private zipPromiseToObservable(zip: JSZip): Observable<string> {
+    return from(zip.generateAsync(
+      {
+        type: "base64",
+      }
+    ));
   }
 
   /**
@@ -63,7 +70,6 @@ export class UploadComponentComponent {
   private downloadEncryptedData(data: string[][]) {
     this.triggerDownloadBase64String(data[0]);
     this.triggerDownloadBase64String(data[1]);
-    this.triggerDownloadBase64String(data[2]);
   }
 
   //https://stackoverflow.com/questions/57922872/angular-save-blob-in-local-text-file
@@ -73,16 +79,27 @@ export class UploadComponentComponent {
    * @param data The values for the base64 file
    */
   public triggerDownloadBase64String(data: string[]) {
-    const base64File: Base64File = new Base64File(data[0], data[1], data[2]);
     let a = document.createElement("a");
     document.body.appendChild(a);
-    const base64FileJson: string = JSON.stringify(base64File);
-    const blob = new Blob([base64FileJson], {type: "octet/stream"});
+    const blob = this.createBase64FileBlobFromData(data);
     const url = window.URL.createObjectURL(blob);
     a.href = url;
-    a.download = (data[2] === 'map') ? `${base64File.fileName}.${base64File.fileExtension}` : `${base64File.fileName}.encrypted`;
+    a.download = (data[2] == 'zip') ? `${data[1]}.encrypted` : `${data[1]}.${data[2]}`;
     a.click();
     window.URL.revokeObjectURL(url);
+  }
+
+  /**
+   * Takes the base64 URI of a file, filename and fileextension from a string array, instantiates a Base64File
+   * instance from it then creates a Blob from its json represenation
+   * @param data
+   * @private
+   */
+  private createBase64FileBlobFromData(data: string[]): Blob {
+    const base64File: Base64File = new Base64File(data[0], data[1], data[2]);
+    const base64FileJson: string = JSON.stringify(base64File);
+    const blob = new Blob([base64FileJson], {type: "octet/stream"});
+    return blob;
   }
 
   //https://medium.com/@tchiayan/compressing-single-file-or-multiple-files-to-zip-format-on-client-side-6607a1eca662
