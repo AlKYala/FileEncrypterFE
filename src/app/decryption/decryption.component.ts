@@ -17,16 +17,11 @@ import {CustomFile} from "../../shared/Base64File/CustomFile/model/CustomFile";
 export class DecryptionComponent implements OnInit {
 
   public uploadedFiles: Array<File> = [];
-  public customFiles: Array<CustomFile> = [];
 
   constructor(private fileUploadService: FileUploadService,
               private httpClient: HttpClient,
               private sanitizer: DomSanitizer,
               private base64Service: Base64Service) {
-    const placeHolderCustom = {file: this.getEmptyFile(), fileName: "", fileExtension: ""};
-    for(let i = 0; i < 2; i++) {
-      this.customFiles[i] = placeHolderCustom;
-    }
   }
 
   ngOnInit(): void {
@@ -41,7 +36,7 @@ export class DecryptionComponent implements OnInit {
    * is no limit on how many files are encrypted at once
    */
   public fireUpload() {
-    if(this.uploadedFiles.length != 3) {
+    if(this.uploadedFiles.length != 2) {
       console.log("debug error message");
     }
     let extendedBase64: ExtendedBase64File;
@@ -55,9 +50,8 @@ export class DecryptionComponent implements OnInit {
     });
   }
 
-  public static setFiles($eventTarget: EventTarget, index: number) {
-    //TODO im upload das hinkriegen dass wir eine File erzeugen
-    console.log($eventTarget);
+  onChange(event: any, index: number): void {
+    this.uploadedFiles[index] = event.target.files[0];
   }
 
   //https://stackoverflow.com/questions/50182259/avoiding-nested-promises-in-angular
@@ -162,10 +156,5 @@ export class DecryptionComponent implements OnInit {
    */
   private getEmptyFile(): File {
     return new File([], "");
-  }
-
-  public setCustomFile(index: number, file: File) {
-    const names: string[] = this.fileUploadService.getFileNameAndExtension(file.name);
-    this.customFiles[index] = {file: file, fileName: names[0], fileExtension: names[1]};
   }
 }

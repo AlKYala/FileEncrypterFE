@@ -1,13 +1,11 @@
-<form #demoForm="ngForm">
-  <h1>Please only upload the map (.map) and the (.encrypted) file. Anything else will be blocked</h1>
-  <file-upload [(ngModel)]="uploadedFiles" name="files"></file-upload>
-</form>
 <div class="container">
   <div class="row p-1">
-    <input type="file" class="file-upload" onchange="console.log(event.target.files);">
+    <input class="form-control" type="file"
+           (change)="onChange($event, 0)">
   </div>
   <div class="row p-1">
-    <input type="file" class="file-upload">
+    <input class="form-control" type="file"
+           (change)="onChange($event, 1)">
   </div>
 </div>
 
