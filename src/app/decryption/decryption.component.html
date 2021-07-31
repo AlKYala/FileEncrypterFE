@@ -1,17 +1,7 @@
-<div class="container">
-  <div class="row p-1">
-    <p>The data</p>
-    <input class="form-control" type="file"
-           (change)="onChange($event, 0)">
-  </div>
-  <div class="row p-1">
-    <p>The frame</p>
-    <input class="form-control" type="file"
-           (change)="onChange($event, 1)">
-  </div>
-</div>
-
-
+<form #demoForm="ngForm">
+  <h1>Please only upload the map (.map) and the (.encrypted) file. Anything else will be blocked</h1>
+  <file-upload [(ngModel)]="uploadedFiles" name="files"></file-upload>
+</form>
 <button (click)="this.fireUpload()" class="btn btn-primary">
   Debug
 </button>
